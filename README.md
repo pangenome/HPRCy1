@@ -49,8 +49,16 @@ Subset by chromosome.
 
 ```
 ( seq 22; echo X; echo Y; echo M ) | while read i; do awk '$6 ~ "chr'$i'$"' alignments/*.vs.ref.paf | cut -f 1 | sort -V >parts/chr$i.contigs
-( seq 22; echo X; echo Y; echo M ) | while read i; do sbatch -p lowmem -c 24 --wrap 'cat parts/chr'$i'.contigs | parallel -j 24 "s=\$(echo {} | cut -f 1 -d\#); samtools faidx assemblies/\$s.fa.gz {}" >parts/chr'$i'.pan.fa' >> slurm.jobids; done
+( seq 22; echo X; echo Y; echo M ) | while read i; do sbatch -p lowmem -c 24 --wrap 'cat parts/chr'$i'.contigs | parallel -j 24 "s=\$(echo {} | cut -f 1 -d\#); samtools faidx assemblies/\$s.fa.gz {}" >parts/chr'$i'.pan.fa' >> slurm.jobids; doned
 ```
+
+Then we can merge both the reference scaffolds and HPRCy1 contigs:
+
+```
+( seq 22; echo X; echo Y; echo M ) | while read i; do sbatch -p lowmem -c 8 --wrap '( samtools faidx assemblies/chm13.fa.gz chm13#chr'$i'; samtools faidx assemblies/grch38.fna.gz grch38#chr'$i'; cat parts/chr'$i'.pan.fa ) >parts/chr'$i'.pan+refs.fa && samtools faidx parts/chr'$i'.pan+refs.fa' >> slurm.jobids; done
+```
+
+We will use these files directly in pggb.
 
 
 ## graph generation
