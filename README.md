@@ -66,3 +66,9 @@ We will use these files directly in pggb.
 Todo.
 
 We apply pggb.
+
+## graph evaluation
+
+Todo.
+
+We apply pgge.
