@@ -31,7 +31,7 @@ Combine them into a single reference for competitive assignment of sample contig
 zcat chm13.fa.gz grch38.fna.gz >chm13+grch38.pan.fa && samtools faidx chm13+grch38.pan.fa
 ```
 
-Partition the assembly contigs by chromosome by mapping each assembly against the scaffolded references, and then subsetting the graph.
+Partition the assembly contigs by chromosome by mapping each assembly against the scaffolded references, and then subsetting the graph. Here we use [wfmash](https://github.com/ekg/wfmash) for the mapping.
 
 ```
 cd ..
@@ -58,21 +58,21 @@ Then we can merge both the reference scaffolds and HPRCy1 contigs:
 ( seq 22; echo X; echo Y; echo M ) | while read i; do sbatch -p lowmem -c 8 --wrap '( samtools faidx assemblies/chm13.fa.gz chm13#chr'$i'; samtools faidx assemblies/grch38.fna.gz grch38#chr'$i'; cat parts/chr'$i'.pan.fa ) >parts/chr'$i'.pan+refs.fa && samtools faidx parts/chr'$i'.pan+refs.fa' >> slurm.jobids; done
 ```
 
-We will use these files directly in pggb.
+We will use these files directly in [pggb](https://github.com/pangenome/pggb).
 
 
 ## graph generation
 
-Todo.
-
-We apply pggb.
+We apply [pggb](https://github.com/pangenome/pggb).
 
 ```
 ( seq 22 ; echo X; echo Y; echo M ) | while read i; do sbatch -c 48 --wrap 'pggb -i parts/chr'$i'.pan+refs.fa -s 15000 -p 98 -l 100000 -w 500000 -j 15000 -e 15000 -n 7 -t 48 -v -Y "#" -k 27 -B 30000000 -I 0.6 -R 0.2 -C 100,1000,10000,10000:parts/refs/chm13+grch38.chr'$i'.txt:y,10000:parts/refs/chm13+grch38.chr'$i'.txt:n -o graphs/chr'$i'.pan+refs' >>wg.jobids; done
 ```
 
-## graph evaluation
-
 Todo.
 
-We apply pgge.
+## graph evaluation
+
+We apply [pgge](https://github.com/pangenome/pgge).
+
+Todo.
