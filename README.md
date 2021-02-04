@@ -67,6 +67,10 @@ Todo.
 
 We apply pggb.
 
+```
+( seq 22 ; echo X; echo Y; echo M ) | while read i; do sbatch -c 48 --wrap 'pggb -i parts/chr'$i'.pan+refs.fa -s 15000 -p 98 -l 100000 -w 500000 -j 15000 -e 15000 -n 7 -t 48 -v -Y "#" -k 27 -B 30000000 -I 0.6 -R 0.2 -C 100,1000,10000,10000:parts/refs/chm13+grch38.chr'$i'.txt:y,10000:parts/refs/chm13+grch38.chr'$i'.txt:n -o graphs/chr'$i'.pan+refs' >>wg.jobids; done
+```
+
 ## graph evaluation
 
 Todo.
