@@ -31,7 +31,7 @@ Combine them into a single reference for competitive assignment of sample contig
 zcat chm13.fa.gz grch38.fna.gz >chm13+grch38.pan.fa && samtools faidx chm13+grch38.pan.fa
 ```
 
-Partition the assembly contigs by chromosome by mapping each assembly against the scaffolded references, and then subsetting the graph.
+Partition the assembly contigs by chromosome by mapping each assembly against the scaffolded references, and then subsetting the graph. Here we use [wfmash](https://github.com/ekg/wfmash) for the mapping.
 
 ```
 cd ..
@@ -58,12 +58,12 @@ Then we can merge both the reference scaffolds and HPRCy1 contigs:
 ( seq 22; echo X; echo Y; echo M ) | while read i; do sbatch -p lowmem -c 8 --wrap '( samtools faidx assemblies/chm13.fa.gz chm13#chr'$i'; samtools faidx assemblies/grch38.fna.gz grch38#chr'$i'; cat parts/chr'$i'.pan.fa ) >parts/chr'$i'.pan+refs.fa && samtools faidx parts/chr'$i'.pan+refs.fa' >> slurm.jobids; done
 ```
 
-We will use these files directly in pggb.
+We will use these files directly in [pggb](https://github.com/pangenome/pggb).
 
 
 ## graph generation
 
-We apply pggb.
+We apply [pggb](https://github.com/pangenome/pggb).
 
 ```
 ( seq 22; echo X; echo Y; echo M ) | while read i; do sbatch -p lowmem -c 48 --wrap 'cd /scratch && pggb -i /lizardfs/erikg/HPRC/year1/parts/chr'$i'.pan+refs.fa -s 20000 -l 200000 -p 98 -w 500000 -j 12000 -e 12000 -n 7 -t 48 -v -Y "#" -k 27 -B 20000000 -I 0.7 -R 0.2 -C 100,1000,10000,100::y:2,100::y:2:200000,100:/lizardfs/erikg/HPRC/year1/parts/refs/chm13.txt:n:2,100:/lizardfs/erikg/HPRC/year1/parts/refs/chm13+grch38.txt:n:2,100:/lizardfs/erikg/HPRC/year1/parts/refs/chm13+grch38.txt:n,100:/lizardfs/erikg/HPRC/year1/parts/refs/chm13+grch38.txt:y -o chr'$i'.pan+refs ; mv /scratch/chr'$i'.pan+refs /lizardfs/erikg/HPRC/year1/wgg' >>wgg.jobids; done
@@ -73,6 +73,6 @@ This runs on 9 nodes with AMD EPYC 7402P 24-Core processors and 128GB of RAM in 
 
 ## graph evaluation
 
-Todo.
+We apply [pgge](https://github.com/pangenome/pgge).
 
-We apply pgge.
+Todo.
