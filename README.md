@@ -71,6 +71,8 @@ We apply [pggb](https://github.com/pangenome/pggb).
 
 This runs on 9 nodes with AMD EPYC 7402P 24-Core processors and 128GB of RAM in around 12 hours.
 
+Here [odgi viz](https://github.com/vgteam/odgi) and [Bandage](https://github.com/rrwick/Bandage) visualizations for all the resulting chromosomes, except chrY (we encountered a bug for that one): [http://hypervolu.me/~erik/HPRC/wgg/](http://hypervolu.me/~erik/HPRC/wgg/).
+
 ## graph evaluation
 
 We apply [pgge](https://github.com/pangenome/pgge).
