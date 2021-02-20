@@ -48,8 +48,8 @@ done
 Subset by chromosome.
 
 ```
-( seq 22; echo X; echo Y; echo M ) | while read i; do awk '$6 ~ "chr'$i'$"' alignments/*.vs.ref.paf | cut -f 1 | sort -V >parts/chr$i.contigs
-( seq 22; echo X; echo Y; echo M ) | while read i; do sbatch -p lowmem -c 24 --wrap 'cat parts/chr'$i'.contigs | parallel -j 24 "s=\$(echo {} | cut -f 1 -d\#); samtools faidx assemblies/\$s.fa.gz {}" >parts/chr'$i'.pan.fa' >> slurm.jobids; done
+( seq 22; echo X; echo Y; echo M ) | while read i; do awk '$6 ~ "chr'$i'$"' $(ls alignments/*.vs.ref.paf | sort -V) | cut -f 1 | sort -V >parts/chr$i.contigs; done
+( seq 22; echo X; echo Y; echo M ) | while read i; do sbatch -p lowmem -c 24 --wrap 'cat parts/chr'$i'.contigs | parallel -k -j 24 "s=\$(echo {} | cut -f 1 -d\#); samtools faidx assemblies/\$s.fa.gz {}" >parts/chr'$i'.pan.fa' >> slurm.jobids; done
 ```
 
 Then we can merge both the reference scaffolds and HPRCy1 contigs:
